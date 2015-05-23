@@ -14,6 +14,11 @@
 #include <haka/error.h>
 
 
+#if defined(__CYGWIN__)
+#include "pthread_barrier.h"
+#endif
+
+
 static int thread_capture_count = 0;
 
 int thread_get_packet_capture_cpu_count()

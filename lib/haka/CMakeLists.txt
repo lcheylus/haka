@@ -35,6 +35,48 @@ lua_compile(NAME libhakalua FILES
 )
 lua_install(TARGET libhakalua DESTINATION share/haka/core)
 
+if(CYGWIN)
+add_library(libhaka SHARED
+	packet.c
+	log.c
+	log_module.c
+	alert.c
+	alert_module.c
+	module.c
+	error.c
+	debug.c
+	pthread_barrier.c
+	thread.c
+	parameters.c
+	colors.c
+	time.c
+	timer.c
+	state_machine.c
+	vbuffer.c
+	vbuffer_data.c
+	vbuffer_stream.c
+	vbuffer_sub_stream.c
+	regexp_module.c
+	system.c
+	engine.c
+	container/list.c
+	container/list2.c
+	container/vector.c
+	lua/state.c
+	lua/ref.c
+	lua/lua.c
+	lua/marshal.c
+	luadebug/interactive.c
+	luadebug/complete.c
+	luadebug/debugger.c
+	luadebug/utils.c
+	luadebug/user.c
+	luadebug/user_readline.c
+	luadebug/user_remote.c
+	${SWIG_libhakaswig_FILES}
+	../../external/lmarshal/lmarshal.c
+)
+else()
 add_library(libhaka SHARED
 	packet.c
 	log.c
@@ -74,6 +116,7 @@ add_library(libhaka SHARED
 	${SWIG_libhakaswig_FILES}
 	../../external/lmarshal/lmarshal.c
 )
+endif()
 
 set_target_properties(libhaka PROPERTIES COMPILE_DEFINITIONS _GNU_SOURCE)
 
