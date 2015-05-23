@@ -210,6 +210,16 @@ bool semaphore_post(semaphore_t *semaphore);
  * @{
  */
 
+// Redefine pthread_barrier_t for Cygwin
+#ifdef __CYGWIN__
+typedef struct {
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int count;
+    int tripCount;
+} pthread_barrier_t;
+#endif
+
 typedef pthread_barrier_t barrier_t; /**< Opaque barrier type. */
 
 bool barrier_init(barrier_t *barrier, uint32 count);
