@@ -15,7 +15,10 @@ if(NOT ${INIPARSER_FOUND})
 		src/src/iniparser.c)
 
 	# The static library is going to be used in a shared library
-	SET_TARGET_PROPERTIES(iniparser PROPERTIES COMPILE_FLAGS "-fPIC")
+	# Disable fPIC option on Windows Cygwin
+	if(NOT (CYGWIN))
+		SET_TARGET_PROPERTIES(iniparser PROPERTIES COMPILE_FLAGS "-fPIC")
+	endif()
 
 	set(INIPARSER_LIBRARY iniparser CACHE INTERNAL "iniparser libaray")
 	set(INIPARSER_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/src" CACHE INTERNAL "iniparser include dir")
