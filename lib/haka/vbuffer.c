@@ -462,6 +462,8 @@ static bool _vbuffer_iterator_check(const struct vbuffer_iterator *position)
 		return false;
 	}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 	if (position->registered) {
 		if ((!position->chunk->data && !position->chunk->flags.end) ||
 		    position->offset > position->chunk->size ||
@@ -471,6 +473,7 @@ static bool _vbuffer_iterator_check(const struct vbuffer_iterator *position)
 			return false;
 		}
 	}
+#pragma GCC diagnostic pop
 
 	assert(!position->chunk || (position->chunk->list.next &&
 		position->chunk->list.prev));
@@ -492,7 +495,11 @@ void vbuffer_iterator_copy(const struct vbuffer_iterator *src, struct vbuffer_it
 
 	dst->chunk = src->chunk;
 	dst->offset = src->offset;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 	dst->meter = src->meter;
+#pragma GCC diagnostic pop
 }
 
 void vbuffer_iterator_clear(struct vbuffer_iterator *position)
