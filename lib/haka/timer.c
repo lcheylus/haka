@@ -9,7 +9,10 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
+
+#ifndef __CYGWIN__
 #include <sys/syscall.h>
+#endif
 
 #include <haka/timer.h>
 #include <haka/error.h>
@@ -62,10 +65,15 @@ static struct time_realm_state *create_time_realm_state(struct time_realm *realm
 
 	if (realm->mode == TIME_REALM_REALTIME) {
 		memset(&sev, 0, sizeof(sev));
-		sev.sigev_notify = SIGEV_THREAD_ID;
 		sev.sigev_signo = SIGALRM;
 		sev.sigev_value.sival_ptr = state;
+
+#if defined(__CYGWIN__)
+		sev.sigev_notify = 4; // Fake value for SIGEV_THREAD_ID
+#else
 		sev._sigev_un._tid = syscall(SYS_gettid);
+		sev.sigev_notify = SIGEV_THREAD_ID;
+#endif
 
 		if (timer_create(CLOCK_MONOTONIC, &sev, &state->timer)) {
 			free(state);
