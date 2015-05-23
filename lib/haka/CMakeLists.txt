@@ -95,6 +95,7 @@ link_directories(${LUA_LIBRARY_DIR})
 set_target_properties(libhaka PROPERTIES OUTPUT_NAME haka)
 
 # Install
-install(TARGETS libhaka LIBRARY DESTINATION lib)
+# install(TARGETS libhaka LIBRARY DESTINATION lib)
+install(TARGETS libhaka DESTINATION lib)
 
 add_subdirectory(test)
