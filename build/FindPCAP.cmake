@@ -7,7 +7,12 @@
 include(FindPackageHandleStandardArgs)
 include(CheckCSourceCompiles)
 
-find_path(PCAP_INCLUDE_DIR NAMES pcap.h)
-find_library(PCAP_LIBRARY NAMES pcap)
+if(NOT (CYGWIN))
+	find_path(PCAP_INCLUDE_DIR NAMES pcap.h)
+	find_library(PCAP_LIBRARY NAMES pcap)
+else()
+	find_path(PCAP_INCLUDE_DIR NAMES pcap/pcap.h)
+	find_library(PCAP_LIBRARY NAMES wpcap)
+endif()
 
 find_package_handle_standard_args(PCAP REQUIRED_VARS PCAP_LIBRARY PCAP_INCLUDE_DIR)
