@@ -118,6 +118,11 @@ add_library(libhaka SHARED
 )
 endif()
 
+# Add specific flags for link on Cygwin
+if(CYGWIN)
+       set_target_properties(libhaka PROPERTIES LINK_FLAGS -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive *.o -Wl,--no-whole-archive)
+endif()
+
 set_target_properties(libhaka PROPERTIES COMPILE_DEFINITIONS _GNU_SOURCE)
 
 set_target_properties(libhaka PROPERTIES VERSION ${HAKA_VERSION_MAJOR}.${HAKA_VERSION_MINOR}.${HAKA_VERSION_PATCH}
