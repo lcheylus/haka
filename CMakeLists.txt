@@ -78,9 +78,9 @@ set(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_DEBUG} --coverage")
 
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2 -fstack-protector --param ssp-buffer-size=4")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2 -fstack-protector --param ssp-buffer-size=4")
-set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
-set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
-set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
+# set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
+# set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
+# set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -Wl,-z,relro -Wl,-z,now")
 
 # The RelWithDebInfo options should be the same as Release
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE} -g")
@@ -129,8 +129,15 @@ if(LCOV_FOUND)
 	)
 endif(LCOV_FOUND)
 
+# Add suffix for libraries with Cygwin
+if(CYGWIN)
+set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .dll.a .a)
+endif()
+
 # Force the RUNPATH to be set to the RPATH to improve library search order
+if(NOT (CYGWIN))
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--enable-new-dtags")
+endif()
 
 # Default SWIG behavior to not create global module
 find_package(SWIG 2 REQUIRED)
