@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-find_package(LibGeoIP)
+# Temporary disable GeoIP module for Cygwin
+# find_package(LibGeoIP)
 
 if(LIBGEOIP_FOUND)
 	INCLUDE_MODULE(ipv4 protocol)
