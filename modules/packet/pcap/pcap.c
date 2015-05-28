@@ -3,7 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include <arpa/inet.h>
+
+#if defined(__CYGWIN__)
+#include "if_ether.h"
+#else
 #include <linux/if_ether.h>
+#endif
+
 #include <pcap.h>
 #include <pcap/vlan.h>
 #include <stdio.h>
