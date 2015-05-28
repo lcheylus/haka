@@ -9,7 +9,13 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/time.h>
+
+#if defined (__CYGWIN__)
+#include "if_ether.h"
+#else
 #include <linux/if_ether.h>
+#endif
+
 #include <arpa/inet.h>
 
 #include <haka/packet_module.h>
@@ -79,6 +85,13 @@ static int init(struct parameters *args)
 	input = parameters_get_string(args, "file", NULL);
 
 	if (interfaces) {
+		/* Interfaces input not supported on Windows
+		 * 'pcap_get_selectable_fd' function used in 'packet_do_receive' not supported in WinPCAP
+		 * TODO: support interfaces on Windows */
+#if !defined(__linux__)
+		LOG_ERROR(pcap, "%s", "Interfaces not supported as input on Windows.");
+		return 1;
+#else
 		int count, i;
 		const char *iter;
 		char *interfaces_buf, *str, *ptr = NULL;
@@ -120,7 +133,9 @@ static int init(struct parameters *args)
 		free(interfaces_buf);
 
 		input_is_iface = true;
+#endif /* __!linux__ */
 	}
+
 	else if (input) {
 		input_count = 1;
 		inputs = malloc(sizeof(char *));
@@ -344,6 +359,10 @@ static int packet_do_receive(struct packet_module_state *state, struct packet **
 	else {
 		int i;
 		int ret;
+
+		/* Function 'pcap_get_selectable_fd not supported in WinPCAP
+		 * Used for multiples interfaces for input */
+#if defined(__linux__)
 		fd_set read_set;
 		int max_fd = -1;
 
@@ -366,6 +385,10 @@ static int packet_do_receive(struct packet_module_state *state, struct packet **
 		if (engine_thread_interrupt_fd() > max_fd) max_fd = engine_thread_interrupt_fd();
 
 		ret = select(max_fd+1, &read_set, NULL, NULL, NULL);
+#else
+		ret = 1;
+#endif /* __linux__ */
+
 		if (ret < 0) {
 			if (errno == EINTR) {
 				return 0;
@@ -378,17 +401,27 @@ static int packet_do_receive(struct packet_module_state *state, struct packet **
 		else if (ret == 0) {
 			return 0;
 		}
+
+		/* Read packet and clone it */
 		else {
 			struct pcap_capture *pd = NULL;
 			struct pcap_pkthdr *header;
 			const u_char *p;
 
 			for (i=0; i<state->pd_count; ++i) {
+#if defined(__linux__)
+				/* Function 'pcap_get_selectable_fd not supported in WinPCAP
+				 * Used for multiples interfaces for input */
 				const int fd = pcap_get_selectable_fd(state->pd[i].pd);
 				if (FD_ISSET(fd, &read_set)) {
 					pd = &state->pd[i];
 					break;
 				}
+#else
+				/* On Windows handle on PCAP file (pcap_t*) and input_count = 1 */
+				pd = &state->pd[i];
+#endif /* __linux__ */
+
 			}
 
 			if (!pd) {
