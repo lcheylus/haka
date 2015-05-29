@@ -14,6 +14,9 @@ else()
 	set(CPU_COUNT 1)
 endif()
 
+# For compilation on Cygwin without WIN32
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+
 # Warn in source build
 if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 	message(WARNING "In-source builds are not recommanded.")
