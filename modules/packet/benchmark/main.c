@@ -9,7 +9,13 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/time.h>
+
+#if defined (__CYGWIN__)
+#include "../pcap/if_ether.h"
+#else
 #include <linux/if_ether.h>
+#endif
+
 #include <arpa/inet.h>
 
 #include <haka/packet_module.h>
