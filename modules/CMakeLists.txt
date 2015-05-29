@@ -5,7 +5,12 @@
 set(MODULE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 macro(SWIG_FIX_ENTRYPOINT target type)
-	set_target_properties(${target} PROPERTIES LINK_FLAGS "-Wl,--defsym=luaopen_${type}/${target}=luaopen_${target}")
+	# On CYGWIN, symbol names prefixed with '_'
+	if(CYGWIN)
+		set_target_properties(${target} PROPERTIES LINK_FLAGS "-Wl,--defsym=luaopen_${type}/${target}=_luaopen_${target}")
+	else()
+		set_target_properties(${target} PROPERTIES LINK_FLAGS "-Wl,--defsym=luaopen_${type}/${target}=luaopen_${target}")
+	endif()
 endmacro()
 
 # Setup module file names
