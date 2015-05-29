@@ -12,6 +12,11 @@ swig_add_module(ipv4 lua SHARED
 )
 SWIG_FIX_ENTRYPOINT(ipv4 protocol)
 
+# Add specific flags for link on Cygwin
+if(CYGWIN)
+       set_target_properties(ipv4 PROPERTIES LINK_FLAGS -Wl,--export-all-symbols)
+endif()
+
 include_directories(.)
 
 INSTALL_MODULE(ipv4 protocol)
