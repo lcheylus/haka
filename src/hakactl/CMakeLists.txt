@@ -15,6 +15,11 @@ swig_process(hakactlswig lua
 	lua/hakactl.i
 )
 
+# Add specific flags for link on Cygwin
+if(CYGWIN)
+       set_target_properties(libhakactl PROPERTIES LINK_FLAGS -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--whole-archive *.o -Wl,--no-whole-archive)
+endif()
+
 add_executable(hakactl
 	hakactl.c
 	commands.c
