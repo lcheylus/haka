@@ -9,6 +9,12 @@ if(PCAP_FOUND)
 	add_library(benchmark MODULE main.c)
 
 	include_directories(${PCAP_INCLUDE_DIR})
+
+	# Specific path for includes on Windows with WinPCAP
+	if(CYGWIN)
+		include_directories("${PCAP_INCLUDE_DIR}/pcap/")
+	endif()
+
 	target_link_libraries(benchmark ${PCAP_LIBRARY})
 
 	DEPENDS_MODULE(benchmark packet-pcap packet)
