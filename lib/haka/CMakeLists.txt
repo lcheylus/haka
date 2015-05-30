@@ -143,7 +143,10 @@ link_directories(${LUA_LIBRARY_DIR})
 set_target_properties(libhaka PROPERTIES OUTPUT_NAME haka)
 
 # Install
-# install(TARGETS libhaka LIBRARY DESTINATION lib)
-install(TARGETS libhaka DESTINATION lib)
+if(CYGWIN)
+	install(TARGETS libhaka DESTINATION lib)
+else()
+	install(TARGETS libhaka LIBRARY DESTINATION lib)
+endif()
 
 add_subdirectory(test)
