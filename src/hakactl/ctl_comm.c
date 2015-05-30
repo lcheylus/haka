@@ -25,7 +25,11 @@ static bool ctl_check_error(int err, int expected, bool forread)
 		return false;
 	}
 	else if (err <= 0) {
-		error("%s", errno_error(errno));
+		/*
+		 * Temporary fix for errno_error unknown symbol with hakactl link on Cygwin
+		 * error("%s", errno_error(errno));
+		 */
+		error("error: see error code in ctl_comm.c");
 		return false;
 	}
 	else if (err != expected) {
