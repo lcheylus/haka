@@ -49,7 +49,10 @@ add_definitions(-DLUA_ROOT="${CMAKE_INSTALL_PREFIX}/share/haka/lua")
 
 add_library(liblua STATIC ${LUA_CORE_SRC} ${LUA_LIB_SRC})
 set_target_properties(liblua PROPERTIES OUTPUT_NAME lua)
-set_target_properties(liblua PROPERTIES COMPILE_FLAGS -fPIC)
+
+if(NOT (CYGWIN))
+	set_target_properties(liblua PROPERTIES COMPILE_FLAGS -fPIC)
+endif()
 
 install(FILES
 	${LUA_SRC_DIR}/src/lua.h
